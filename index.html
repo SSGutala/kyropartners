@@ -5979,19 +5979,20 @@ async function handleIntakeSubmit(e) {
     sendPushover(data),
   ]);
 
-  // Update progress to 100%
+  // Reset form and show confirmation
+  const form = document.getElementById('intakeForm');
+  form.reset();
+  document.querySelectorAll('.if-file-list').forEach(el => el.remove());
 
-  document.getElementById('ifProgressFill').style.width = '100%';
+  document.getElementById('ifProgressFill').style.width = '0%';
+  document.getElementById('ifProgressPct').textContent = '0%';
 
-  document.getElementById('ifProgressPct').textContent = '100%';
-
-  btn.textContent = 'Brief Submitted';
-
+  btn.textContent = 'Submit Another Brief';
+  btn.disabled = false;
   btn.style.opacity = '1';
-
   btn.style.background = '#1a9e5f';
 
-  showToast('Brief received. We\'ll be in touch within 24 hours.');
+  showToast('Brief received — we\'ll be in touch within 24 hours. Feel free to submit another!');
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
 
