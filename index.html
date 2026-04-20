@@ -5150,7 +5150,7 @@ footer {
 
           <div class="if-field"><label>Industry <span class="req">*</span></label><select name="industry" required><option value="">Select your industry...</option><option>Restaurant / Food & Beverage</option><option>Retail / Boutique / Shop</option><option>Home Services (Cleaning, HVAC, Plumbing, etc.)</option><option>Auto Repair / Automotive</option><option>Health & Wellness / Spa / Salon</option><option>Legal / Financial / Consulting</option><option>Real Estate</option><option>Construction / Contracting / Renovation</option><option>Education / Tutoring / Coaching</option><option>Non-Profit / Community Organization</option><option>Photography / Creative / Art</option><option>E-Commerce / Product Business</option><option>Events / Entertainment</option><option>Technology / SaaS / Startup</option><option>Medical / Dental / Healthcare</option><option>Other</option></select></div>
 
-          <div class="if-field"><label>Current Website (if any)</label><input type="url" name="current_site" placeholder="https://yourbusiness.com"></div>
+          <div class="if-field"><label>Current Website (if any)</label><input type="text" name="current_site" placeholder="https://yourbusiness.com"></div>
 
           <div class="if-field if-span"><label>What does your business do? <span class="req">*</span><span class="hint">Plain and honest — like you'd explain it to a neighbor</span></label><textarea name="business_description" rows="3" placeholder="e.g. We're a family-owned auto repair shop in Fairfax. We specialize in classic car restoration and have been doing it for 30 years." required></textarea></div>
 
@@ -5972,16 +5972,11 @@ async function handleIntakeSubmit(e) {
 
   const data = await collectFormData();
 
-  // Fire all three in parallel — none block the others
-
-  await Promise.allSettled([
-
+  // Fire all three — don't await so UI responds immediately
+  Promise.allSettled([
     sendToGoogleSheets(data),
-
     sendEmailJS(data),
-
     sendPushover(data),
-
   ]);
 
   // Update progress to 100%
