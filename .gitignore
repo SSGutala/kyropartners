@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Unused root-level drafts / scratch files
+k2-Hero-bkg-music.mov
+k2-hero-d3.mp4
+k2-hero-d4.mp4
+k2-hero-vid-hd.mp4
+kyro2.0-hero-vid-1.mp4
+kyro2.0-hero-z-out.png
+Kyro2.0-hero.png
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Env
+.env
+.env.local

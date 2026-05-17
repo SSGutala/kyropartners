@@ -1,0 +1,84 @@
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --purple: #7B2FFF;
+  --dark: #020202;
+  --font-sans: 'Space Grotesk', 'Inter', sans-serif;
+}
+
+html {
+  background: var(--dark);
+  height: 100%;
+}
+
+body {
+  background: var(--dark);
+  color: #fff;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+button, a {
+  cursor: none;
+}
+
+canvas {
+  touch-action: none;
+  display: block;
+}
+
+/* ── Responsive: restore cursor on touch / small screens ── */
+@media (max-width: 1024px) {
+  body, button, a { cursor: auto; }
+}
+
+/* ── Prevent horizontal overflow without breaking position:sticky ── */
+/* overflow-x:hidden on html/body kills sticky — use clip instead */
+html, body { overflow-x: clip; }
+
+/* Loading screen */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.loading-bar-track {
+  width: 200px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-bar-fill {
+  position: absolute;
+  inset: 0;
+  background: #ff6600;
+  animation: loadScan 1.4s ease-in-out infinite;
+  transform-origin: left;
+}
+
+@keyframes loadScan {
+  0%   { transform: scaleX(0) translateX(0%); }
+  50%  { transform: scaleX(1) translateX(0%); }
+  100% { transform: scaleX(0) translateX(200%); }
+}
+
+.loading-label {
+  font-size: 9px;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.25);
+}
