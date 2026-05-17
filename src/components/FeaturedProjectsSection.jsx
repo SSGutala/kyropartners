@@ -30,7 +30,7 @@ const projects = [
   },
 ]
 
-/* ── Video visual — autoplays; pauses when fully off screen ── */
+/* ── Video visual ── */
 function VideoVisual({ src }) {
   const videoRef = useRef(null)
 
@@ -38,10 +38,16 @@ function VideoVisual({ src }) {
     const video = videoRef.current
     if (!video) return
 
-    // Attempt play immediately (belt-and-suspenders with autoPlay attribute)
     const tryPlay = () => video.play().catch(() => {})
-    tryPlay()
 
+    // Mobile / tablet (≤1024px): just play immediately and leave it running —
+    // no IntersectionObserver pausing so all videos play regardless of scroll
+    if (window.innerWidth <= 1024) {
+      tryPlay()
+      return
+    }
+
+    // Desktop: pause when card scrolls fully off screen
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -51,7 +57,7 @@ function VideoVisual({ src }) {
           video.currentTime = 0
         }
       },
-      { threshold: 0.1 }   // trigger as soon as 10% is visible
+      { threshold: 0.1 }
     )
 
     observer.observe(video)

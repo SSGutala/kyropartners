@@ -93,16 +93,27 @@ export default function App() {
     enteredRef.current = true
     setEntered(true)
     playFadeIn()
+    // On mobile autoPlay is often blocked — start the hero video
+    // directly from this user gesture so no native play button shows
+    if (bgRef.current && bgRef.current.paused) {
+      bgRef.current.play().catch(() => {})
+    }
   }
 
-  // ── page visibility — pause when hidden, resume when visible ──
+  // ── page visibility — hard-stop when hidden, fade-in when visible ──
+  // Covers: tab switch, app switch, device sleep/lock button
   useEffect(() => {
     function onVisChange() {
       if (userOff.current || !enteredRef.current) return
       const audio = audioRef.current
       if (!audio) return
       if (document.hidden) {
-        pauseFadeOut()
+        // Hard-stop immediately — setInterval gets throttled on hidden tabs
+        // so a fade would take forever; just cut the audio now
+        cancelAnimationFrame(fadeRaf.current)
+        clearInterval(fadeTimer.current)
+        audio.pause()
+        audio.volume = 0
       } else {
         playFadeIn()
       }
@@ -346,6 +357,13 @@ export default function App() {
               object-position: 75% 35%;
             }
           }
+          @media (max-width: 1024px) {
+            .hero-sound-btn {
+              top: 64px !important;
+              bottom: auto !important;
+              right: 20px !important;
+            }
+          }
           @media (max-width: 767px) {
             .hero-cta-wrap {
               left: 20px !important;
@@ -355,10 +373,6 @@ export default function App() {
             .hero-cta-wrap button {
               width: 100%;
               justify-content: center;
-            }
-            .hero-sound-btn {
-              bottom: 16px !important;
-              right: 20px !important;
             }
             .hero-scroll-hint {
               display: none !important;
