@@ -88,16 +88,21 @@ export default function App() {
     }, 16)
   }
 
-  // ── triggered by splash click ─────────────────────────────────
-  function handleEnter() {
-    enteredRef.current = true
-    setEntered(true)
+  // ── fires synchronously on the splash click (gesture trust alive) ──
+  function handleFirstClick() {
+    // Start audio immediately — iOS expires gesture trust ~1 s after click,
+    // so calling this from onEnter (1200 ms later) was too late
     playFadeIn()
-    // On mobile autoPlay is often blocked — start the hero video
-    // directly from this user gesture so no native play button shows
+    // Also kick the hero video in case autoPlay was blocked on mobile
     if (bgRef.current && bgRef.current.paused) {
       bgRef.current.play().catch(() => {})
     }
+  }
+
+  // ── triggered after splash fade completes (1200 ms later) ────────
+  function handleEnter() {
+    enteredRef.current = true
+    setEntered(true)
   }
 
   // ── page visibility — hard-stop when hidden, fade-in when visible ──
@@ -155,7 +160,7 @@ export default function App() {
 
   return (
     <>
-      {!entered && <SplashScreen onEnter={handleEnter} />}
+      {!entered && <SplashScreen onEnter={handleEnter} onFirstClick={handleFirstClick} />}
       <NavOverlay />
       <MagneticCursor />
       <audio ref={audioRef} src={bgMusic} loop preload="auto" />

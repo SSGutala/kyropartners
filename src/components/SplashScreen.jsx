@@ -3,7 +3,7 @@ import React, { useRef, useEffect, useState } from 'react'
 const BASE_RADIUS = 200
 const N_PARTICLES = 500
 
-export default function SplashScreen({ onEnter }) {
+export default function SplashScreen({ onEnter, onFirstClick }) {
   const canvasRef  = useRef(null)
   const stateRef   = useRef({
     t         : 0,
@@ -205,6 +205,10 @@ export default function SplashScreen({ onEnter }) {
 
     const s = stateRef.current
     if (s.dispersing) return
+
+    // Fire immediately — still inside the user-gesture call stack so
+    // audio.play() and video.play() are allowed by iOS/Android
+    onFirstClick && onFirstClick()
 
     // seed dispersion from current ring particles
     const particles = []

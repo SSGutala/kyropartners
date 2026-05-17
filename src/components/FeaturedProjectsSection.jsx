@@ -40,11 +40,13 @@ function VideoVisual({ src }) {
 
     const tryPlay = () => video.play().catch(() => {})
 
-    // Mobile / tablet (≤1024px): just play immediately and leave it running —
-    // no IntersectionObserver pausing so all videos play regardless of scroll
+    // Mobile / tablet (≤1024px): play immediately and leave running.
+    // Also attach a canplay listener — large files may not be loaded yet
+    // on mount, so retry the moment the browser has enough data.
     if (window.innerWidth <= 1024) {
       tryPlay()
-      return
+      video.addEventListener('canplay', tryPlay, { once: true })
+      return () => video.removeEventListener('canplay', tryPlay)
     }
 
     // Desktop: pause when card scrolls fully off screen
