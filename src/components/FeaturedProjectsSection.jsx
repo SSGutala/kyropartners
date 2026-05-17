@@ -30,7 +30,7 @@ const projects = [
   },
 ]
 
-/* ── Video visual — plays only when card is on screen ── */
+/* ── Video visual — autoplays; pauses when fully off screen ── */
 function VideoVisual({ src }) {
   const videoRef = useRef(null)
 
@@ -38,16 +38,20 @@ function VideoVisual({ src }) {
     const video = videoRef.current
     if (!video) return
 
+    // Attempt play immediately (belt-and-suspenders with autoPlay attribute)
+    const tryPlay = () => video.play().catch(() => {})
+    tryPlay()
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          video.play().catch(() => {})
+          tryPlay()
         } else {
           video.pause()
           video.currentTime = 0
         }
       },
-      { threshold: 0.5 }   // card must be ≥50% visible to play
+      { threshold: 0.1 }   // trigger as soon as 10% is visible
     )
 
     observer.observe(video)
@@ -58,9 +62,11 @@ function VideoVisual({ src }) {
     <video
       ref={videoRef}
       src={src}
+      autoPlay
       muted
       loop
       playsInline
+      preload="auto"
       disablePictureInPicture
       controlsList="nodownload nofullscreen noremoteplayback"
       style={{ width:'100%', height:'100%', objectFit:'contain', display:'block', background:'#000' }}

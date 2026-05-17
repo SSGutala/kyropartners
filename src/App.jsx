@@ -164,7 +164,7 @@ export default function App() {
         <video
           ref={bgRef}
           src={heroVid}
-          autoPlay muted loop playsInline
+          autoPlay muted loop playsInline preload="auto"
           className="hero-video"
           style={{
             position  : 'absolute',
