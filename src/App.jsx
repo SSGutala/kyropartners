@@ -10,7 +10,7 @@ import CapabilitiesSection from './components/CapabilitiesSection'
 import GlobeSection from './components/GlobeSection'
 import FooterSection from './components/FooterSection'
 import heroVid from './assets/hero.mp4'
-import bgMusic from './assets/bgmusic.mov'
+import bgMusic from './assets/bgmusic.m4a'
 
 const TARGET_VOL = 0.22
 
@@ -57,6 +57,9 @@ export default function App() {
     clearInterval(fadeTimer.current)
     cancelAnimationFrame(fadeRaf.current)
     audio.volume = 0
+    // On mobile, load() resets the element so play() is treated as
+    // a fresh request tied to the current user gesture
+    if (audio.readyState === 0) audio.load()
     audio.play().catch(() => {})
     const step = () => {
       const diff = TARGET_VOL - audio.volume
@@ -260,13 +263,14 @@ export default function App() {
         <button
           className="hero-sound-btn"
           onClick={toggleSound}
+          onTouchStart={e => { e.preventDefault(); toggleSound() }}
           style={{
             position     : 'absolute',
             bottom       : 28,
             right        : 36,
             background   : 'none',
             border       : 'none',
-            padding      : 0,
+            padding      : '10px',
             cursor       : 'none',
             display      : 'flex',
             alignItems   : 'center',
@@ -278,6 +282,7 @@ export default function App() {
             transition   : 'color 0.2s',
             userSelect   : 'none',
             pointerEvents: 'auto',
+            WebkitTapHighlightColor: 'transparent',
           }}
           onMouseEnter={e => e.currentTarget.style.color = 'rgba(255,255,255,0.75)'}
           onMouseLeave={e => e.currentTarget.style.color = 'rgba(255,255,255,0.4)'}
